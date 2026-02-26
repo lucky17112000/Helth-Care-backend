@@ -1,0 +1,2 @@
+- for oackage.json file -> npm init
+- tsc --init for ts config file
