@@ -21,10 +21,17 @@ const registerpatient = async (payload: IRegisterPatientPayload) => {
   if (!data.user) {
     throw new Error("Failed to register patient");
   }
-  //   const patient = await prisma.$transaction(async (tx) => {
-  //     await tx.pa;
-  //   });
-  return data;
+  const patient = await prisma.$transaction(async (tx) => {
+    const patientTx = await tx.patient.create({
+      data: {
+        userId: data.user.id,
+        name: name,
+        email: email,
+      },
+    });
+    return patientTx;
+  });
+  return { ...data, patient };
 };
 interface ILoginUserPayload {
   email: string;
