@@ -1,15 +1,14 @@
-import express, { Application, Request, Response } from "express";
+import app from "./app";
 
-const app: Application = express();
 const port = process.env.PORT || 5000;
 
-app.use(express.json()); // Add this line to enable JSON parsing in the request body
-app.use(express.urlencoded({ extended: true })); // Add this line to enable URL-encoded data parsing in the request body
-
-app.get("/", (req: Request, res: Response) => {
-  res.send("Hello, TypeScript Express!");
-});
-
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+const bootstrap = async () => {
+  try {
+    app.listen(process.env.PORT, () => {
+      console.log(`Server is running on port ${port}`);
+    });
+  } catch (error) {
+    console.error("Error starting the server:", error);
+  }
+};
+bootstrap();
