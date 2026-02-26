@@ -4,6 +4,6 @@ node_modules
 !.emv.example
 dist
 coverage
-/generated/prisma
+/src/generated
 
-/generated/prisma
+
