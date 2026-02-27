@@ -60,7 +60,7 @@ const createDoctor = async (payload: ICreateDoctorPayload) => {
           userId: true,
           name: true,
           email: true,
-          phone: true,
+
           profilePhoto: true,
           contactNumber: true,
           address: true,
@@ -88,7 +88,7 @@ const createDoctor = async (payload: ICreateDoctorPayload) => {
               deletedAt: true,
             },
           },
-          specialities: {
+          specilaities: {
             select: {
               speciality: {
                 select: {
