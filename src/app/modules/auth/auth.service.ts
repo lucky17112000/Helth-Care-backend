@@ -3,6 +3,8 @@ import { Role, User, UserStatus } from "../../../generated/prisma/client";
 import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
 import AppError from "../../middlware/AppError";
+import { tokenUtiles } from "../../utiles/token";
+// import { jwtUtiles } from "../../utiles/jwt";
 interface IRegisterPatientPayload {
   name: string;
   email: string;
@@ -67,8 +69,25 @@ const LoginUser = async (payload: ILoginUserPayload) => {
     // throw new Error("User is deleted");
     throw new AppError(status.FORBIDDEN, "User is deleted");
   }
-
-  return data;
+  const accessToken = tokenUtiles.getAccessToken({
+    userId: data.user.id,
+    role: data.user.role,
+    name: data.user.name,
+    email: data.user.email,
+    emailVerified: data.user.emailVerified,
+    status: data.user.status,
+    isDeleted: data.user.isDeleted,
+  });
+  const refreshToken = tokenUtiles.getRefreshToken({
+    userId: data.user.id,
+    role: data.user.role,
+    name: data.user.name,
+    email: data.user.email,
+    emailVerified: data.user.emailVerified,
+    status: data.user.status,
+    isDeleted: data.user.isDeleted,
+  });
+  return { ...data, accessToken, refreshToken };
 };
 
 export const authService = {
