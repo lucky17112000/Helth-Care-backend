@@ -1,6 +1,8 @@
+import status from "http-status";
 import { Role, Speciality } from "../../../generated/prisma/client";
 import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
+import AppError from "../../middlware/AppError";
 import { ICreateDoctorPayload } from "./user.interface";
 //ekhane doctor create kora dorker .tai amra better auth die doctor k signin korie shatre shate doctor er data ekhan thekei create kore felbo by transection and amader doctor create korar somoy speciality o nite hobe tai speciality er id gula niye ashte hobe and check korte hobe je speciality gula ache kina .tarpor doctor create korbo and doctor er shathe speciality o link kore debo accorading to my database design
 
@@ -13,7 +15,11 @@ const createDoctor = async (payload: ICreateDoctorPayload) => {
       },
     });
     if (speciality) specialities.push(speciality);
-    else throw new Error(`Speciality with id ${specialityId} not found`);
+    else
+      throw new AppError(
+        status.BAD_REQUEST,
+        `Speciality with id ${specialityId} not found`,
+      );
   }
   const userExists = await prisma.user.findUnique({
     where: {
@@ -21,7 +27,10 @@ const createDoctor = async (payload: ICreateDoctorPayload) => {
     },
   });
   if (userExists)
-    throw new Error(`User with email ${payload.doctor.email} already exists`);
+    throw new AppError(
+      status.CONFLICT,
+      `User with email ${payload.doctor.email} already exists`,
+    );
   const userData = await auth.api.signUpEmail({
     body: {
       email: payload.doctor.email,

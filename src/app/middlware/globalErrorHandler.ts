@@ -3,6 +3,7 @@ import { envVars } from "../../config/env";
 import status from "http-status";
 import z from "zod";
 import { TErrorResponse, TErrorSource } from "../interfaces/error.intefaces";
+import AppError from "./AppError";
 
 export const globalErrorHandler = (
   err: any,
@@ -24,6 +25,14 @@ export const globalErrorHandler = (
         path: issue.path.join(" => "),
         message: issue.message,
       });
+    });
+  } else if (err instanceof AppError) {
+    statusCode = err.statusCode;
+    message = err.message;
+    stack: err.stack;
+    errorSource.push({
+      path: "",
+      message: err.message,
     });
   }
   res.status(statusCode).json({
