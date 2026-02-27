@@ -7,9 +7,11 @@ import { notFound } from "./app/middlware/notFound";
 import AppError from "./app/middlware/AppError";
 import { stat } from "node:fs";
 import status from "http-status";
+import cookieParser from "cookie-parser";
 
 const app: Application = express();
 app.use(express.json()); // Add this line to enable JSON parsing in the request body
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true })); // Add this line to enable URL-encoded data parsing in the request body
 app.use("/api/v1", IndexRoutes);
 
