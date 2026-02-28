@@ -4,7 +4,7 @@ import { Role, Specialty } from "../../../generated/prisma/client";
 // import AppError from "../../errorHelpers/AppError";
 import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
-import { ICreateDoctorPayload } from "./user.interface";
+import { ICreateAdmin, ICreateDoctorPayload } from "./user.interface";
 import AppError from "../../middlware/AppError";
 // import { ICreateAdminPayload, ICreateDoctorPayload } from "./user.interface";
 
@@ -132,6 +132,73 @@ const createDoctor = async (payload: ICreateDoctorPayload) => {
   }
 };
 
+const createAdmin = async (payload: ICreateAdmin) => {
+  const userExists = await prisma.user.findUnique({
+    where: {
+      email: payload.admin.email,
+    },
+  });
+  if (userExists) {
+    throw new AppError(status.CONFLICT, "User with this email already exists");
+  }
+  //create now account by better auth
+  const userData = await auth.api.signUpEmail({
+    body: {
+      email: payload.admin.email,
+      password: payload.password,
+      role: Role.ADMIN,
+      name: payload.admin.name,
+      needPasswordChange: true,
+      rememberMe: false,
+    },
+  });
+
+  //create admin profile in databse
+  try {
+    const result = await prisma.$transaction(async (tx) => {
+      const admin = await tx.admin.create({
+        data: {
+          userId: userData.user.id,
+          name: payload.admin.name,
+          email: payload.admin.email,
+          profilePhoto: payload.admin.profilePhoto,
+          contactNumber: payload.admin.contactNumber,
+        },
+      });
+      //!SECTION fetch the created admin with user details and return
+      const createdadmin = await tx.admin.findUnique({
+        where: {
+          id: admin.id,
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          profilePhoto: true,
+          contactNumber: true,
+          createdAt: true,
+          updatedAt: true,
+          user: true,
+        },
+      });
+      return createdadmin;
+    });
+    return result;
+  } catch (error) {
+    //delete the user if admin profile creation fails
+    await prisma.user.delete({
+      where: {
+        id: userData.user.id,
+      },
+    });
+    throw new AppError(
+      status.INTERNAL_SERVER_ERROR,
+      "Failed to create admin profile",
+    );
+  }
+};
+
 export const UserService = {
   createDoctor,
+  createAdmin,
 };
