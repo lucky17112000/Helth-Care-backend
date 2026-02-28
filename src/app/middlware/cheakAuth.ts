@@ -7,22 +7,6 @@ import { prisma } from "../lib/prisma";
 import AppError from "./AppError";
 import { jwtUtiles } from "../utiles/jwt";
 import { envVars } from "../../config/env";
-// import { envVars } from "../config/env";
-// import AppError from "../errorHelpers/AppError";
-// import { prisma } from "../lib/prisma";
-// import { CookieUtils } from "../utils/cookie";
-// import { jwtUtils } from "../utils/jwt";
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        userId: string;
-        role: Role;
-        email: string;
-      };
-    }
-  }
-}
 
 export const checkAuth =
   (...authRoles: Role[]) =>
@@ -99,6 +83,7 @@ export const checkAuth =
             role: user.role,
             email: user.email,
           };
+          //!SECTION if block ses
         }
 
         const accessToken = cookieUtiles.getCookie(req, "accessToken");
