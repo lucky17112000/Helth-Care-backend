@@ -1,9 +1,8 @@
 model Patient {
-    id    String @id @default(uuid())
-    // userId String @unique
-    name  String
-    email String @unique
+    id String @id @default(uuid()) @db.Uuid
 
+    name          String
+    email         String    @unique
     profilePhoto  String?
     contactNumber String?
     address       String?
@@ -11,9 +10,16 @@ model Patient {
     deletedAt     DateTime?
     createdAt     DateTime  @default(now())
     updatedAt     DateTime  @updatedAt
+
     //relations
-    userId        String    @unique
-    user          User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    userId            String             @unique
+    user              User               @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    appointments      Appointment[]
+    prescriptions     Prescription[]
+    medicalReports    MedicalReport[]
+    reviews           Review[]
+    patientHealthData PatientHealthData?
 
     @@index([email], name: "idx_patient_email")
     @@index([isDeleted], name: "idx_patient_isDeleted")
