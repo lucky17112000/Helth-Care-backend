@@ -2,7 +2,7 @@ import status from "http-status";
 import { prisma } from "../../lib/prisma";
 import AppError from "../../middlware/AppError";
 import { IUpdateAdminPayload } from "./admin.interface";
-import { is } from "zod/locales";
+
 import { IRequestUser } from "../../interfaces/requestUser.interface";
 import { UserStatus } from "../../../generated/prisma/enums";
 //!SECTION -1

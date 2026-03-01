@@ -5,6 +5,7 @@ import { sendResponse } from "../../shared/sendReponse";
 import status from "http-status";
 import { tokenUtiles } from "../../utiles/token";
 import { IRequestUser } from "../../interfaces/requestUser.interface";
+// import { auth } from "../../lib/auth";
 
 const registerPatient = catchasync(async (req: Request, res: Response) => {
   const payload = req.body;
@@ -49,8 +50,34 @@ const getMe = catchasync(async (req: Request, res: Response) => {
   });
 });
 
+const getNewToken = catchasync(async (req: Request, res: Response) => {
+  const refreshToken = req.cookies.refreshToken;
+  const sessionToken = req.cookies["better-auth.session_token"];
+
+  const result = await authService.getNewToken(refreshToken, sessionToken);
+  const {
+    accessToken,
+    refreshToken: newRefreshToken,
+    sessionToken: newSessionToken,
+  } = result;
+  tokenUtiles.setAccessTokenCookie(res, accessToken);
+  tokenUtiles.setRefreshTokenCookie(res, newRefreshToken);
+  tokenUtiles.setBetterAuthSessionCookie(res, newSessionToken);
+  sendResponse(res, {
+    httpStatusCode: status.OK,
+    success: true,
+    message: "New access token generated successfully",
+    data: {
+      accessToken,
+      refreshToken: newRefreshToken,
+      sessionToken: newSessionToken,
+    },
+  });
+});
+
 export const authController = {
   registerPatient,
   loginUser,
   getMe,
+  getNewToken,
 };
