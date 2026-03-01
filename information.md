@@ -308,3 +308,5 @@ npm run lint     # Run ESLint across the project
 > Built with TypeScript, Express, Prisma, and PostgreSQL — following a modular, maintainable architecture.
 > // access token: can be used to access user data and other protected resource
 > // refresh token: can be used to generate new access token when access token expires
+
+email sending service->node mailer, ejs
