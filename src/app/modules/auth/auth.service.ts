@@ -8,12 +8,13 @@ import { IRequestUser } from "../../interfaces/requestUser.interface";
 import { jwtUtiles } from "../../utiles/jwt";
 import { envVars } from "../../../config/env";
 import { JwtPayload } from "jsonwebtoken";
+import {
+  IChangePasswordPayload,
+  ILoginUserPayload,
+  IRegisterPatientPayload,
+} from "./auth.interface";
 // import { jwtUtiles } from "../../utiles/jwt";
-interface IRegisterPatientPayload {
-  name: string;
-  email: string;
-  password: string;
-}
+
 const registerpatient = async (payload: IRegisterPatientPayload) => {
   const { name, email, password } = payload;
   const data = await auth.api.signUpEmail({
@@ -52,10 +53,6 @@ const registerpatient = async (payload: IRegisterPatientPayload) => {
     throw error;
   }
 };
-interface ILoginUserPayload {
-  email: string;
-  password: string;
-}
 
 const LoginUser = async (payload: ILoginUserPayload) => {
   const { email, password } = payload;
@@ -128,6 +125,7 @@ const getMe = async (user: IRequestUser) => {
 
 const getNewToken = async (refreshToken: string, sessionToken: string) => {
   //exiting session token er time barate hobe new session token amader die make kora possible na karon session token ase better auth theke but amra time barai dite pari
+  //manually session token getting proccess  change passsword e  better auth er away te access kora hoyece so duitai same kaj kore
   const isSessonTokenExists = await prisma.session.findUnique({
     where: {
       token: sessionToken,
@@ -186,9 +184,72 @@ const getNewToken = async (refreshToken: string, sessionToken: string) => {
   };
 };
 
+const changePassword = async (
+  payload: IChangePasswordPayload,
+  sessionToken: string,
+) => {
+  const sesison = await auth.api.getSession({
+    headers: {
+      Authorization: `Bearer ${sessionToken}`,
+    },
+  });
+
+  if (!sesison) {
+    throw new AppError(status.UNAUTHORIZED, "User is not logged in");
+  }
+  const { currentPassword, newPassword } = payload;
+  const result = await auth.api.changePassword({
+    body: {
+      currentPassword,
+      newPassword,
+      revokeOtherSessions: true, //NOTE - baki jotot device ase sob jayga teke logout hgoye jabe
+    },
+    headers: {
+      Authorization: `Bearer ${sessionToken}`,
+    },
+  });
+
+  const newAccessToken = tokenUtiles.getAccessToken({
+    userId: sesison.user.id,
+    role: sesison.user.role,
+    name: sesison.user.name,
+    email: sesison.user.email,
+    emailVerified: sesison.user.emailVerified,
+    status: sesison.user.status,
+    isDeleted: sesison.user.isDeleted,
+  });
+  const newRefreshToken = tokenUtiles.getRefreshToken({
+    userId: sesison.user.id,
+    role: sesison.user.role,
+    name: sesison.user.name,
+    email: sesison.user.email,
+    emailVerified: sesison.user.emailVerified,
+    status: sesison.user.status,
+    isDeleted: sesison.user.isDeleted,
+  });
+
+  //!SECTION end
+  return {
+    ...result,
+    accessToken: newAccessToken,
+    refreshToken: newRefreshToken,
+  };
+};
+
+const logOutUser = async (sessionToken: string) => {
+  const result = await auth.api.signOut({
+    headers: {
+      Authorization: `Bearer ${sessionToken}`,
+    },
+  });
+  return result;
+};
+
 export const authService = {
   registerpatient,
   LoginUser,
   getMe,
   getNewToken,
+  changePassword,
+  logOutUser,
 };
