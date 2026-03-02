@@ -4,34 +4,20 @@ import { catchasync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendReponse";
 
 const createSpeciality = catchasync(async (req: Request, res: Response) => {
-  const payload = req.body;
+  const payload = {
+    ...req.body,
+    icon: req.file?.path,
+  };
   const result = await specialityService.createSpeciality(payload);
+  // console.log(req.body);
+  console.log(req.file);
   sendResponse(res, {
     httpStatusCode: 201,
     success: true,
-    message: "User Created Succesfully",
+    message: "Speciality Created Succesfully",
     data: result,
   });
 });
-
-// const catchasync = (fn: RequestHandler) => {
-//   return async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//       await fn(req, res, next);
-//     } catch (error) {
-//       res.status(500).json({
-//         success: false,
-//         message: "Failed Deleteed Fetch",
-//         error: error instanceof Error ? error.message : "Unknown error",
-//       });
-//     }
-//   };
-// };
-
-// const sum = (a: number, b: number , c:number) => {
-//   return a * b;
-// };
-// sum(10, 20);
 
 const getAllSpecialities = catchasync(async (req: Request, res: Response) => {
   const result = await specialityService.getAllSpecialities();

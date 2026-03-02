@@ -310,3 +310,5 @@ npm run lint     # Run ESLint across the project
 > // refresh token: can be used to generate new access token when access token expires
 
 email sending service->node mailer, ejs
+multer ->it work as a middlawre when we send file in that time it work as a parser
+file upload-> as a storage we will use cloudinary, multer will upload file in cloudinary and get url and store in database
