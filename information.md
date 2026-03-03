@@ -305,6 +305,309 @@ npm run lint     # Run ESLint across the project
 
 ---
 
+## QueryBuilder — Advanced Filtering, Searching & Pagination
+
+The `QueryBuilder` class lives at `src/app/utiles/QueryBuilder.ts`. It is a generic, chainable utility that wraps Prisma's `findMany` + `count` to give every endpoint powerful query capabilities via URL query parameters — no extra code needed per module.
+
+### How it Works Internally
+
+```
+new QueryBuilder(prismaModel, req.query, config)
+  .search()          // OR search across searchableFields
+  .filter()          // AND filter on filterableFields
+  .include(...)      // static relations to always include
+  .dynamicInclude(doctorIncludeConfig)  // user-requested relations via ?include=
+  .paginate()        // ?page & ?limit
+  .sort()            // ?sortBy & ?sortOrder
+  .fields()          // ?fields — select only specific columns
+  .execute()         // runs prisma.findMany + prisma.count together (Promise.all)
+```
+
+`execute()` always returns:
+
+```ts
+{
+  data: T[],
+  meta: {
+    page: number,
+    limit: number,
+    total: number,
+    totalPages: number,
+  }
+}
+```
+
+---
+
+### Config Object — Defined Per Module
+
+Each module defines two arrays in its `<module>.constant.ts`:
+
+| Config Property    | Purpose                                                                      |
+| ------------------ | ---------------------------------------------------------------------------- |
+| `searchableFields` | Fields searched with `contains` (case-insensitive) when `searchTerm` is used |
+| `filterableFields` | Fields allowed for exact/range filtering via query params                    |
+
+**Doctor module example** (`doctor.constant.ts`):
+
+```ts
+export const doctorSearchableFields = [
+  "name",
+  "email",
+  "qualification",
+  "designation",
+  "currentWorkingPlace",
+  "registrationNumber",
+  "specialties.specialty.title", // nested relation (3 levels deep)
+];
+
+export const doctorFilterableFields = [
+  "gender",
+  "isDeleted",
+  "appointmentFee",
+  "experience",
+  "specialties.specialtyId",
+  "currentWorkingPlace",
+  "registrationNumber",
+  "qualification",
+  "designation",
+  "user.role",
+  "specialties.specialty.title",
+];
+```
+
+---
+
+### All Supported Query Parameters
+
+#### 1. `searchTerm` — Full-text Search (OR)
+
+Searches across **all** `searchableFields` using a case-insensitive `contains`. Fields are combined with `OR`.
+
+```
+GET /doctors?searchTerm=cardio
+GET /doctors?searchTerm=john
+GET /doctors?searchTerm=MBBS
+```
+
+Internally generates:
+
+```ts
+where: {
+  OR: [
+    { name: { contains: "cardio", mode: "insensitive" } },
+    { email: { contains: "cardio", mode: "insensitive" } },
+    {
+      specialties: {
+        specialty: { title: { contains: "cardio", mode: "insensitive" } },
+      },
+    },
+    // ...all other searchableFields
+  ];
+}
+```
+
+> **Important:** `searchTerm` is excluded from the filter step automatically.
+
+---
+
+#### 2. Exact Filter (AND)
+
+Use any field name from `filterableFields` as the key. Only fields in that list are allowed — others are silently ignored.
+
+```
+GET /doctors?gender=MALE
+GET /doctors?isDeleted=false
+GET /doctors?currentWorkingPlace=Dhaka
+GET /doctors?qualification=MBBS
+GET /doctors?registrationNumber=REG-001
+```
+
+**Type auto-conversion:**
+
+- `"true"` / `"false"` → `boolean`
+- Numeric strings → `number`
+- Arrays → `{ in: [...] }`
+
+---
+
+#### 3. Nested / Relation Filter (dot notation)
+
+Use dot notation matching `filterableFields` entries to filter on related model fields.
+
+**2-level deep (direct relation):**
+
+```
+GET /doctors?user.role=DOCTOR
+```
+
+Generates: `where: { user: { role: "DOCTOR" } }`
+
+**3-level deep (join table / nested relation):**
+
+```
+GET /doctors?specialties.specialty.title=Cardiology
+GET /doctors?specialties.specialtyId=<uuid>
+```
+
+Generates: `where: { specialties: { some: { specialty: { title: "Cardiology" } } } }`
+
+---
+
+#### 4. Range / Operator Filter
+
+Append Prisma operators in bracket notation. Works on numeric and string fields.
+
+| Operator       | Meaning               | Example                              |
+| -------------- | --------------------- | ------------------------------------ |
+| `[lt]`         | Less than             | `?appointmentFee[lt]=500`            |
+| `[lte]`        | Less than or equal    | `?appointmentFee[lte]=500`           |
+| `[gt]`         | Greater than          | `?appointmentFee[gt]=100`            |
+| `[gte]`        | Greater than or equal | `?experience[gte]=5`                 |
+| `[equals]`     | Exact match           | `?appointmentFee[equals]=300`        |
+| `[not]`        | Not equal             | `?gender[not]=FEMALE`                |
+| `[contains]`   | String contains       | `?name[contains]=John`               |
+| `[startsWith]` | String starts with    | `?name[startsWith]=Dr`               |
+| `[endsWith]`   | String ends with      | `?name[endsWith]=Khan`               |
+| `[in]`         | In a list of values   | `?gender[in]=MALE&gender[in]=FEMALE` |
+| `[notIn]`      | Not in a list         | `?gender[notIn]=FEMALE`              |
+
+```
+GET /doctors?appointmentFee[gt]=100&appointmentFee[lt]=800
+GET /doctors?experience[gte]=5
+GET /doctors?appointmentFee[equals]=300
+```
+
+---
+
+#### 5. Pagination
+
+| Param   | Default | Description                |
+| ------- | ------- | -------------------------- |
+| `page`  | `1`     | Page number (1-based)      |
+| `limit` | `10`    | Number of records per page |
+
+```
+GET /doctors?page=2&limit=5
+```
+
+Response `meta`:
+
+```json
+{
+  "page": 2,
+  "limit": 5,
+  "total": 47,
+  "totalPages": 10
+}
+```
+
+---
+
+#### 6. Sorting
+
+| Param       | Default     | Description                              |
+| ----------- | ----------- | ---------------------------------------- |
+| `sortBy`    | `createdAt` | Field to sort by (supports dot notation) |
+| `sortOrder` | `desc`      | `asc` or `desc`                          |
+
+```
+GET /doctors?sortBy=appointmentFee&sortOrder=asc
+GET /doctors?sortBy=user.name&sortOrder=asc
+GET /doctors?sortBy=createdAt&sortOrder=desc
+```
+
+---
+
+#### 7. `fields` — Select Specific Fields Only
+
+Returns only the listed fields. When `fields` is used, all `include` directives are automatically dropped (Prisma does not allow `select` and `include` together).
+
+```
+GET /doctors?fields=id,name,email,appointmentFee
+```
+
+Generates:
+
+```ts
+select: { id: true, name: true, email: true, appointmentFee: true }
+```
+
+> **Note:** Currently only supports top-level (direct) fields. Nested field selection is not supported yet.
+
+---
+
+#### 8. `include` — Dynamically Include Relations
+
+Requests specific relations defined in `doctorIncludeConfig`. Multiple relations can be comma-separated.
+
+```
+GET /doctors?include=appointments
+GET /doctors?include=doctorSchedules
+GET /doctors?include=reviews,prescriptions
+```
+
+Available relations for doctors (`doctorIncludeConfig` in `doctor.constant.ts`):
+
+- `user`
+- `specialties` (with nested `specialty`)
+- `appointments` (with nested `patient`, `doctor`)
+- `doctorSchedules` (with nested `schedule`)
+- `prescriptions`
+- `reviews`
+
+> **Note:** `user` and `specialties` are always included by default via `.include({ user: true, specialties: true })` in the service.
+
+---
+
+### Full Combined Example
+
+```
+GET /doctors?searchTerm=cardio&gender=MALE&appointmentFee[lt]=800&experience[gte]=3&specialties.specialty.title=Cardiology&page=1&limit=5&sortBy=appointmentFee&sortOrder=asc&include=reviews
+```
+
+This single request:
+
+1. Searches `cardio` across all searchable fields
+2. Filters to `MALE` doctors only
+3. Filters `appointmentFee` below 800
+4. Filters `experience` >= 3 years
+5. Filters by specialty title `Cardiology`
+6. Returns page 1, 5 results per page
+7. Sorted by `appointmentFee` ascending
+8. Also includes the `reviews` relation in the response
+
+---
+
+### Adding QueryBuilder to a New Module
+
+1. Define `searchableFields` and `filterableFields` arrays in `<module>.constant.ts`
+2. In the service, instantiate `QueryBuilder` and chain the methods:
+
+```ts
+const queryBuilder = new QueryBuilder<
+  MyModel,
+  Prisma.MyModelWhereInput,
+  Prisma.MyModelInclude
+>(prisma.myModel, query, {
+  searchableFields: mySearchableFields,
+  filterableFields: myFilterableFields,
+});
+
+const result = await queryBuilder
+  .search()
+  .filter()
+  .include({ relatedModel: true })
+  .paginate()
+  .sort()
+  .fields()
+  .execute();
+
+return result;
+```
+
+---
+
 > Built with TypeScript, Express, Prisma, and PostgreSQL — following a modular, maintainable architecture.
 > // access token: can be used to access user data and other protected resource
 > // refresh token: can be used to generate new access token when access token expires

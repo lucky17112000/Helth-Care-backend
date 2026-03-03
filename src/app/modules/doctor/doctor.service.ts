@@ -2,20 +2,41 @@ import status from "http-status";
 import { prisma } from "../../lib/prisma";
 import AppError from "../../middlware/AppError";
 import { IDoctorUpdate } from "./doctor.interface";
+import { QueryBuilder } from "../../utiles/QueryBuilder";
+import { iQueryParams } from "../../interfaces/query.interface";
+import {
+  doctorFilterableFields,
+  doctorIncludeConfig,
+  doctorSearchableFields,
+} from "./doctor.constant";
+import { Doctor, Prisma } from "../../../generated/prisma/client";
 
-const getAllDoctors = async () => {
-  const doctors = await prisma.doctor.findMany({
-    include: {
-      user: true,
-      specialties: {
-        include: {
-          specialty: true,
-        },
-      },
-    },
+const getAllDoctors = async (query: iQueryParams) => {
+  const queryBuilder = new QueryBuilder<
+    Doctor,
+    Prisma.DoctorWhereInput,
+    Prisma.DoctorInclude
+  >(prisma.doctor, query, {
+    searchableFields: doctorSearchableFields,
+    filterableFields: doctorFilterableFields,
   });
-  return doctors;
+
+  const result = await queryBuilder
+    .search()
+    .filter()
+    .include({
+      user: true,
+      specialties: true,
+    })
+    .dynamicInclude(doctorIncludeConfig)
+    .paginate()
+    .sort()
+    .fields()
+    .execute();
+
+  return result;
 };
+
 const getDoctorById = async (id: string) => {
   const doctor = await prisma.doctor.findUnique({
     where: {
@@ -31,11 +52,7 @@ const getDoctorById = async (id: string) => {
       },
     },
   });
-  return {
-    doctor,
-    // specialities: doctor?.specialties.map((spec) => spec.specialty),
-    // specialties: doctor?.specialties.map((s) => s.specialty),
-  };
+  return doctor;
 };
 
 const updateDoctor = async (id: string, payload: IDoctorUpdate) => {

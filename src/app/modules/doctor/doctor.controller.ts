@@ -4,16 +4,20 @@ import { doctorService } from "./doctor.service";
 import { sendResponse } from "../../shared/sendReponse";
 import status from "http-status";
 import { IDoctorUpdate } from "./doctor.interface";
+import { iQueryParams } from "../../interfaces/query.interface";
 
 const getAllDoctors = catchasync(async (req: Request, res: Response) => {
-  const result = await doctorService.getAllDoctors();
+  const query = req.query;
+  const result = await doctorService.getAllDoctors(query as iQueryParams);
   sendResponse(res, {
     httpStatusCode: status.OK,
     success: true,
     message: "Doctors retrieved successfully",
-    data: result,
+    data: result.data,
+    meta: result.meta,
   });
 });
+
 const getDoctorById = catchasync(async (req: Request, res: Response) => {
   const id = req.params.id;
   const result = await doctorService.getDoctorById(id as string);
@@ -41,3 +45,4 @@ export const doctorController = {
   getDoctorById,
   updateDoctor,
 };
+//doctor123
