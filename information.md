@@ -608,6 +608,226 @@ return result;
 
 ---
 
+## QueryBuilder — Method Chain Breakdown
+
+Every call in the chain builds up an internal Prisma query object. Nothing hits the database until `.execute()` is called.
+
+```ts
+const result = await queryBuilder
+  .search()
+  .filter()
+  .paginate()
+  .dynamicInclude(scheduleIncludeConfig)
+  .sort()
+  .fields()
+  .execute();
+```
+
+---
+
+### Method Reference
+
+#### `.search()`
+
+**Purpose:** Searches across all `searchableFields` using a case-insensitive `contains`. All fields are joined with `OR`.
+
+**Reads from URL:** `?searchTerm=<value>`
+
+**Effect on query:**
+
+```ts
+where: {
+  OR: [
+    { title: { contains: "morning", mode: "insensitive" } },
+    {
+      specialties: {
+        some: {
+          specialty: { title: { contains: "morning", mode: "insensitive" } },
+        },
+      },
+    },
+    // ...all other searchableFields
+  ];
+}
+```
+
+> If `searchTerm` is not provided, this method does nothing and passes through.
+
+---
+
+#### `.filter()`
+
+**Purpose:** Applies AND filters based on URL query parameters. Only fields listed in `filterableFields` are allowed — others are silently ignored.
+
+**Reads from URL:** Any key not in `["searchTerm", "page", "limit", "sortBy", "sortOrder", "fields", "include"]`
+
+**Effect on query:**
+
+```ts
+// URL: ?isBooked=false&appointmentFee[lt]=500&user.role=DOCTOR
+where: {
+  isBooked: false,
+  appointmentFee: { lt: 500 },
+  user: { role: "DOCTOR" }
+}
+```
+
+**Auto type conversion:**
+
+- `"true"` / `"false"` → `boolean`
+- Numeric strings → `number`
+- Arrays → `{ in: [...] }`
+- Bracket operators (`[lt]`, `[gt]`, `[gte]`, etc.) → Prisma range filters
+
+---
+
+#### `.paginate()`
+
+**Purpose:** Calculates `skip` and `take` values from URL params to slice the result set.
+
+**Reads from URL:** `?page=2&limit=5`
+
+**Defaults:** `page = 1`, `limit = 10`
+
+**Effect on query:**
+
+```ts
+// page=2, limit=5 → skip = (2-1) * 5 = 5
+query: { skip: 5, take: 5 }
+```
+
+**Returns in meta:**
+
+```json
+{ "page": 2, "limit": 5, "total": 47, "totalPages": 10 }
+```
+
+---
+
+#### `.dynamicInclude(includeConfig, defaultInclude?)`
+
+**Purpose:** Includes Prisma relations **on-demand** based on what the client requests in the URL. Unlike `.include()` which always includes everything, `dynamicInclude()` only loads what is explicitly asked for — saving query cost.
+
+**Parameters:**
+
+| Parameter        | Type                      | Description                                              |
+| ---------------- | ------------------------- | -------------------------------------------------------- |
+| `includeConfig`  | `Record<string, unknown>` | Map of all available relations and their include options |
+| `defaultInclude` | `string[]` _(optional)_   | Relations to always include regardless of URL params     |
+
+**Reads from URL:** `?include=doctorSchedules,appointments`
+
+**Effect on query:**
+
+```ts
+// scheduleIncludeConfig = {
+//   doctorSchedules: { include: { schedule: true } },
+//   appointments: { include: { patient: true } },
+//   reviews: true,
+// }
+
+// URL: ?include=doctorSchedules,appointments
+include: {
+  doctorSchedules: { include: { schedule: true } },
+  appointments: { include: { patient: true } },
+  // reviews is NOT included — client didn't ask
+}
+```
+
+**With defaultInclude:**
+
+```ts
+.dynamicInclude(scheduleIncludeConfig, ["doctorSchedules"])
+
+// doctorSchedules is ALWAYS included even if ?include= is absent or omits it
+```
+
+> If `.fields()` has already been called (select mode active), `dynamicInclude()` is a no-op — Prisma cannot use `include` and `select` together.
+
+---
+
+#### `.sort()`
+
+**Purpose:** Applies `orderBy` to the query. Supports dot notation for sorting by nested/relation fields.
+
+**Reads from URL:** `?sortBy=<field>&sortOrder=asc|desc`
+
+**Defaults:** `sortBy = "createdAt"`, `sortOrder = "desc"`
+
+**Effect on query:**
+
+```ts
+// ?sortBy=appointmentFee&sortOrder=asc
+orderBy: {
+  appointmentFee: "asc";
+}
+
+// ?sortBy=user.name&sortOrder=asc
+orderBy: {
+  user: {
+    name: "asc";
+  }
+}
+```
+
+---
+
+#### `.fields()`
+
+**Purpose:** Enables Prisma `select` mode — only the requested fields are returned in the response. All other fields (and all relations) are stripped.
+
+**Reads from URL:** `?fields=id,name,email,appointmentFee`
+
+**Effect on query:**
+
+```ts
+select: { id: true, name: true, email: true, appointmentFee: true }
+// include is automatically deleted — Prisma forbids select + include together
+```
+
+> **Important:** When `fields` is active, `.include()` and `.dynamicInclude()` calls are both silently skipped. Currently only top-level (non-nested) fields are supported.
+
+---
+
+#### `.execute()`
+
+**Purpose:** Fires the actual database queries. Runs `prisma.findMany()` and `prisma.count()` **in parallel** using `Promise.all`, then returns both the data and pagination metadata.
+
+**Returns:**
+
+```ts
+{
+  data: T[],              // array of matching records
+  meta: {
+    page: number,         // current page
+    limit: number,        // records per page
+    total: number,        // total matching records (ignores pagination)
+    totalPages: number,   // Math.ceil(total / limit)
+  }
+}
+```
+
+**Why parallel?**  
+Running count and findMany simultaneously is faster than sequentially — both queries are independent of each other.
+
+---
+
+### Visual Flow Summary
+
+```
+.search()         →  WHERE OR: [...]          (full-text search)
+.filter()         →  WHERE AND: {...}          (exact / range / nested filters)
+.paginate()       →  skip + take               (result slicing)
+.dynamicInclude() →  include: {...}            (only client-requested relations)
+.sort()           →  orderBy: {...}            (sorting direction & field)
+.fields()         →  select: {...}             (field projection)
+.execute()        →  prisma.findMany + count   (actual DB hit → data + meta)
+```
+
+Each method returns `this`, enabling method chaining. Only `.execute()` is `async` and returns a `Promise`.
+
+---
+
 > Built with TypeScript, Express, Prisma, and PostgreSQL — following a modular, maintainable architecture.
 > // access token: can be used to access user data and other protected resource
 > // refresh token: can be used to generate new access token when access token expires

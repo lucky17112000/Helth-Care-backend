@@ -18,6 +18,18 @@ import qs from "qs";
 const app: Application = express();
 app.set("queries parser", (str: string) => qs.parse(str));
 app.set("views", path.resolve(process.cwd(), "src/app/templates"));
+//payment
+
+app.post(
+  "/webhook",
+  express.raw({ type: "application/json" }),
+  async (req: Request, res: Response) => {
+    console.log("Received webhook:", req.body);
+    // Process the webhook event here
+    res.status(200).json({ received: true });
+  },
+);
+
 app.use(
   cors({
     origin: [envVars.FRONTEND_URL, envVars.BETTER_AUTH_URL],

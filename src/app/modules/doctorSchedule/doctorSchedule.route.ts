@@ -3,7 +3,7 @@ import { doctorScheduleController } from "./doctorSchedules.controller";
 
 const router = Router();
 router.post(
-  "/create-doctor-schedule",
+  "/create-my-doctor-schedule",
   doctorScheduleController.createDoctorSchedule,
 );
 router.get("/my-doctor-schedule", doctorScheduleController.getMyDoctorSchedule);
@@ -13,11 +13,11 @@ router.get(
   doctorScheduleController.getDoctorScheduleById,
 );
 router.patch(
-  "/update-doctor-schedule",
+  "/update-my-doctor-schedule",
   doctorScheduleController.updateDoctorSchedule,
 );
 router.delete(
-  "/delete-doctor-schedule/:id",
+  "/delete-my-doctor-schedule/:id",
   doctorScheduleController.deleteDoctorSchedule,
 );
 export const doctorScheduleRoute = router;
