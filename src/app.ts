@@ -14,6 +14,9 @@ import path from "path";
 import cors from "cors";
 import { envVars } from "./config/env";
 import qs from "qs";
+import cron from "node-cron";
+import { PaymentController } from "./app/modules/payment/payment.controller";
+import { AppointmentService } from "./app/modules/appointment/appoinment.service";
 
 const app: Application = express();
 app.set("queries parser", (str: string) => qs.parse(str));
@@ -23,11 +26,7 @@ app.set("views", path.resolve(process.cwd(), "src/app/templates"));
 app.post(
   "/webhook",
   express.raw({ type: "application/json" }),
-  async (req: Request, res: Response) => {
-    console.log("Received webhook:", req.body);
-    // Process the webhook event here
-    res.status(200).json({ received: true });
-  },
+  PaymentController.handleStripeWebhookEvent,
 );
 
 app.use(
@@ -42,6 +41,16 @@ app.all("/api/auth/*path", toNodeHandler(auth));
 app.use(express.json()); // Add this line to enable JSON parsing in the request body
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true })); // Add this line to enable URL-encoded data parsing in the request body
+cron.schedule("*/25 * * * *", async () => {
+  try {
+    console.log("Running cron job to check for upcoming appointments...");
+    await AppointmentService.cancelUnpaidAppoinments();
+    console.log("Cron job completed successfully.");
+  } catch (error) {
+    console.error("Error running cron job:", error);
+  }
+});
+
 app.use("/api/v1", IndexRoutes);
 
 //basic route

@@ -90,10 +90,43 @@ const getAllAppoinment = catchasync(async (req: Request, res: Response) => {
   });
 });
 //!SECTION
+const bookAppoinmentWithPayLater = catchasync(
+  async (req: Request, res: Response) => {
+    const payload = req.body;
+    const user = req.user;
+    const appointment = await AppointmentService.bookAppoinmentWithPayLater(
+      payload,
+      user as IRequestUser,
+    );
+    sendResponse(res, {
+      success: true,
+      httpStatusCode: status.CREATED,
+      message: "Appointment booked successfully with pay later option",
+      data: appointment,
+    });
+  },
+);
+
+const initiatePayment = catchasync(async (req: Request, res: Response) => {
+  const appointmentId = req.params.id;
+  const user = req.user;
+  const paymentResult = await AppointmentService.initiatePayment(
+    appointmentId as string,
+    user as IRequestUser,
+  );
+  sendResponse(res, {
+    success: true,
+    httpStatusCode: status.OK,
+    message: "Payment initiated successfully",
+    data: paymentResult,
+  });
+});
 export const AppointmentController = {
   bookAppointment,
   getMyAppointments,
   changeAppointmentStatus,
   getMySingleAppointment,
   getAllAppoinment,
+  bookAppoinmentWithPayLater,
+  initiatePayment,
 };

@@ -36,7 +36,7 @@ const createSchedule = async (payload: ICreateSchedulePayload) => {
     const dateWithHour = addHours(baseDate, hour); // 2026-03-03 09:00:00
 
     const finalDate = addMinutes(dateWithHour, minute);
-    const startDateTime = finalDate;
+    let startDateTime = finalDate;
 
     const formattedDateTimeEnd = format(currentDate, "yyyy-MM-dd"); // "2026-03-03"
     const baseDateEnd = new Date(formattedDateTimeEnd); // 2026-03-03 00:00:00
@@ -49,9 +49,10 @@ const createSchedule = async (payload: ICreateSchedulePayload) => {
     const finalDateEnd = addMinutes(dateWithHourEnd, minuteEnd);
     const endDateTime = finalDateEnd;
 
-    while (startDateTime <= endDateTime) {
+    while (startDateTime < endDateTime) {
+      const slotEnd = addMinutes(startDateTime, interval);
       const s = await convertDateTime(startDateTime); // convert in utc
-      const e = await convertDateTime(endDateTime); // convert in utc
+      const e = await convertDateTime(slotEnd); // convert in utc
       const scheduleData = {
         startDateTime: s,
         endDateTime: e,
@@ -71,7 +72,7 @@ const createSchedule = async (payload: ICreateSchedulePayload) => {
       }
       //!SECTION data create
 
-      startDateTime.setMinutes(startDateTime.getMinutes() + interval); //increment by 30 in inner loop
+      startDateTime = slotEnd; //increment by 30 in inner loop
     }
     //NOTE - inner whileloop end
     currentDate.setDate(currentDate.getDate() + 1); //increment by 1 day in outer loop

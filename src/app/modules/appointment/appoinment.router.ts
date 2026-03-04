@@ -14,5 +14,10 @@ router.get(
   AppointmentController.getMySingleAppointment,
 );
 router.get("/all-appointments", AppointmentController.getAllAppoinment);
+router.post(
+  "/book-appointment-with-pay-later",
+  AppointmentController.bookAppoinmentWithPayLater,
+);
+router.post("/initiate-payment/:id", AppointmentController.initiatePayment);
 
 export const AppointmentRoutes = router;
