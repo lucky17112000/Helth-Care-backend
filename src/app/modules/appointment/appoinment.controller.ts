@@ -8,6 +8,7 @@ import { IRequestUser } from "../../interfaces/requestUser.interface";
 const bookAppointment = catchasync(async (req: Request, res: Response) => {
   const payload = req.body;
   const user = req.user;
+  console.log("User email:", user?.email);
   const appointment = await AppointmentService.bookAppoinment(
     payload,
     user as IRequestUser,

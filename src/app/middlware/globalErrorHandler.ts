@@ -5,6 +5,7 @@ import z from "zod";
 import { TErrorResponse, TErrorSource } from "../interfaces/error.intefaces";
 import AppError from "./AppError";
 import { deleteFileFromCloudinary } from "../../config/cloudinary.config";
+import { deleteUploadedFileFromGlobalErrorHandler } from "../utiles/deletUploadedFileFromGlobalErrorHandler";
 
 export const globalErrorHandler = async (
   err: any,
@@ -17,21 +18,22 @@ export const globalErrorHandler = async (
   }
 
   //!SECTION: image delete for single and mutiple file upload when show any error
-  try {
-    if (req.file) {
-      await deleteFileFromCloudinary(req.file.path);
-    }
+  // try {
+  //   if (req.file) {
+  //     await deleteFileFromCloudinary(req.file.path);
+  //   }
 
-    if (req.files && Array.isArray(req.files) && req.files.length > 0) {
-      const imageUrl = req.files.map((file) => file.path);
-      await Promise.all(imageUrl.map((url) => deleteFileFromCloudinary(url)));
-    }
-  } catch (deleteError) {
-    console.error(
-      "Failed to delete uploaded file(s) from Cloudinary:",
-      deleteError,
-    );
-  }
+  //   if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+  //     const imageUrl = req.files.map((file) => file.path);
+  //     await Promise.all(imageUrl.map((url) => deleteFileFromCloudinary(url)));
+  //   }
+  // } catch (deleteError) {
+  //   console.error(
+  //     "Failed to delete uploaded file(s) from Cloudinary:",
+  //     deleteError,
+  //   );
+  // }
+  await deleteUploadedFileFromGlobalErrorHandler(req);
   //!SECTION: image delete
   const errorSource: TErrorSource[] = [];
   let statusCode: number = status.INTERNAL_SERVER_ERROR;

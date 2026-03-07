@@ -18,6 +18,7 @@ const bookAppoinment = async (
   user: IRequestUser,
 ) => {
   //TODO -
+
   const patientData = await prisma.patient.findFirstOrThrow({
     where: { email: user.email },
   });
@@ -93,7 +94,7 @@ const bookAppoinment = async (
           quantity: 1,
         },
       ],
-      success_url: `${envVars.FRONTEND_URL}/dashboard/appoinments`,
+      success_url: `${envVars.FRONTEND_URL}/dashboard/payment-success?appointmentId=${appoinment.id}&paymentId=${paymentData.id}`,
       metadata: {
         appointmentId: appoinment.id,
         paymentId: paymentData.id,
