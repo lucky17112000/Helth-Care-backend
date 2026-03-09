@@ -6,7 +6,7 @@ import { Role } from "../../../generated/prisma/enums";
 const router = Router();
 router.get(
   "/",
-  checkAuth(Role.ADMIN, Role.DOCTOR, Role.PATIENT),
+  checkAuth(Role.ADMIN, Role.DOCTOR, Role.PATIENT, Role.SUPER_ADMIN),
   statsController.getDasboardStatsdata,
 );
 export const statsRoutes = router;

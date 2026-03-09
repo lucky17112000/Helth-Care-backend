@@ -40,6 +40,9 @@ const getSuperAdminStatsData = async (user: IRequestUser) => {
     _sum: { amount: true },
     where: { status: PaymentStatus.PAID },
   });
+
+  const pieChartData = await getPieChartData();
+  const barChartData = await getBarchartdata();
   return {
     appoinmentCount,
     doctorCount,
@@ -49,6 +52,8 @@ const getSuperAdminStatsData = async (user: IRequestUser) => {
     paymentCount,
     superAdminCount,
     totalRevenue: totalRevenue._sum.amount || 0,
+    pieChartData,
+    barChartData,
   };
 };
 const getAdminStatsData = async (user: IRequestUser) => {
@@ -58,13 +63,9 @@ const getAdminStatsData = async (user: IRequestUser) => {
   const adminCount = await prisma.admin.count();
   const userCount = await prisma.user.count();
   const paymentCount = await prisma.payment.count();
-  //   const superAdminCount = await prisma.admin.count({
-  //     where: {
-  //       user: {
-  //         role: Role.SUPER_ADMIN,
-  //       },
-  //     },
-  //   });
+  const pieChartData = await getPieChartData();
+  const barChartData = await getBarchartdata();
+
   const totalRevenue = await prisma.payment.aggregate({
     _sum: { amount: true },
     where: { status: PaymentStatus.PAID },
@@ -76,7 +77,7 @@ const getAdminStatsData = async (user: IRequestUser) => {
     adminCount,
     userCount,
     paymentCount,
-
+    pieChartData,
     totalRevenue: totalRevenue._sum.amount || 0,
   };
 };
@@ -156,6 +157,41 @@ const getPatientStatsData = async (user: IRequestUser) => {
     reviewCount,
     appointmentStatusDistribution: formattedAppointmentStatusDistribution,
   };
+};
+
+const getPieChartData = async () => {
+  const appointmentStatusDistribution = await prisma.appointment.groupBy({
+    by: ["status"],
+    _count: {
+      id: true,
+    },
+  });
+
+  const formattedAppointmentStatusDistribution =
+    appointmentStatusDistribution.map(({ _count, status }) => ({
+      status,
+      count: _count.id,
+    }));
+
+  return formattedAppointmentStatusDistribution;
+};
+
+const getBarchartdata = async () => {
+  interface AppoinmentCountByMonth {
+    month: Date;
+    count: bigint;
+  }
+
+  const appoinmentCountByMonth: AppoinmentCountByMonth[] =
+    await prisma.$queryRaw`
+    SELECT DATE_TRUNC('month', "createdAt") AS month, 
+    CAST(COUNT(*) AS INTEGER) AS count
+    FROM "appointments"
+    GROUP BY month
+    ORDER BY month ASC;
+    
+    `;
+  return appoinmentCountByMonth;
 };
 
 export const statsServices = {
