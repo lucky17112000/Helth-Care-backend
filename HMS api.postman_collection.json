@@ -1,0 +1,1285 @@
+{
+  "info": {
+    "_postman_id": "18f58529-152d-46de-a56f-2295538a4e70",
+    "name": "HMS api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52407033",
+    "_collection_link": "https://go.postman.co/collection/52407033-18f58529-152d-46de-a56f-2295538a4e70?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "User Register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Asaduzzaman Alamin\",\r\n    \"email\": \"asaduzzamanalamin112809@gmail.com\",\r\n    \"password\": \"passwor1234\"\r\n\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Patient3\",\r\n    \"email\": \"myDoctor@gmail.com\",\r\n    \"password\": \"passwor1234\"\r\n\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/auth/refresh-token",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "refresh-token"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login[ADMIN]",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"superadmin@helthcare.com\",\r\n    \"password\": \"12345678\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login[DOCTOR]",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"superadmin@helthcare.com\",\r\n    \"password\": \"12345678\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login[PATIENT]",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"superadmin@helthcare.com\",\r\n    \"password\": \"12345678\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"currentPassword\":\"new123456\",\r\n    \"newPassword\": \"new1234567\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/auth/change-password",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "change-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "APP error Cheaking purpose",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getMe",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"email\": \"myDoctor@gmail.com\",\r\n    \"password\": \"passwor1234\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/auth/me",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Log out",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"email\": \"myDoctor@gmail.com\",\r\n    \"password\": \"passwor1234\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/auth/logout",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Email",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"email\": \"asaduzzamanalamin112809@gmail.com\",\r\n   \"otp\":\"966776\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/auth/verify-email",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "verify-email"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "forget password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"asaduzzamanalamin112809@gmail.com\"\r\n    \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/auth/forget-password",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "forget-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"asaduzzamanalamin112809@gmail.com\",\r\n    \"otp\":\"859929\",\r\n    \"newPassword\":\"neww123456\"\r\n\r\n    \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/auth/reset-password",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "reset-password"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Specialities",
+      "item": [
+        {
+          "name": "create Speciaty",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "data",
+                  "value": "{\n    \"title\":\"Ortopedix\"\n}",
+                  "type": "text",
+                  "uuid": "3fd26b25-c823-4bdd-9038-aaf605fd82a2"
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "39655b58-d17f-49ea-a014-5534464d68f2",
+                  "src": "/C:/Users/User/Downloads/images.jpeg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/specialities",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "specialities"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteSpecialities",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\":\"Nurology\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/specialities/627ba9c8-6686-452c-a43b-695e70e12637",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "specialities",
+                "627ba9c8-6686-452c-a43b-695e70e12637"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getSpeciality",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "",
+                  "type": "file",
+                  "uuid": "a89e31cc-3e96-45af-8f14-59f78f3f6e2d",
+                  "value": null
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/specialities",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "specialities"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Create Doctor",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"password\": \"doctor123\",\r\n  \"doctor\": {\r\n    \"name\": \"DR. TANVIR HASAN\",\r\n    \"email\": \"tanvir.hasan@example.com\",\r\n    \"profilePhoto\": \"https://example.com/tanvir.jpg\",\r\n    \"contactNumber\": \"01912345678\",\r\n    \"address\": \"Chattogram Medical Area, Chattogram\",\r\n    \"registrationNumber\": \"BMDC-987623\",\r\n    \"experience\": 12,\r\n    \"gender\": \"MALE\",\r\n    \"appointmentFee\": 1200,\r\n    \"qualification\": \"MBBS, MS (Orthopedics)\",\r\n    \"currentWorkingPlace\": \"Chattogram Medical College Hospital\",\r\n    \"designation\": \"Senior Orthopedic Surgeon\"\r\n  },\r\n  \"specialities\": [\r\n    \"a9e4f91d-0dd5-4bbd-b07a-4de01f45691c\"\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/users/create-doctor",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "create-doctor"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"password\": \"StrongPassword123!\",\r\n  \"admin\": {\r\n    \"name\": \"Asaduzzaman Alamin\",\r\n    \"email\": \"alamin2@example.com\",\r\n    \"profilePhoto\": \"https://example.com/photo.jpg\",\r\n    \"contactNumber\": \"+8801234567890\"\r\n  }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/users/create-admin",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "create-admin"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Doctor",
+      "item": [
+        {
+          "name": "Get All Doctor",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/doctors",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "doctors"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "searchTerm",
+                  "value": "orto",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "gender",
+                  "value": "FEMALE",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "appointmentFee[gte]",
+                  "value": "500",
+                  "description": "issue",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "appointmentFee[lte]",
+                  "value": "900",
+                  "description": "issue",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "fields",
+                  "value": "name,email",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "sortBy",
+                  "value": "name",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "asc",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "experience[gt]",
+                  "value": "7",
+                  "description": "isssue",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "include",
+                  "value": "specialties",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "user.role",
+                  "value": "DOCTOR",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": null,
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Doctor By ID",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/doctors/638a1723-8b0f-4867-849c-a6b593c1ee36",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "doctors",
+                "638a1723-8b0f-4867-849c-a6b593c1ee36"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update single Doctor By ID",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Dr. Updated Nameeeeeee\",\r\n    \"appointmentFee\": 150,\r\n    \"specialties\": [\"97a9a1e0-aba1-4104-9321-7142ac6ddac1\", \"eb658fc0-c7d7-4dd1-b4d1-4275725d7311\"]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/doctors/95d9203e-2669-4f61-8c0b-182d6d8cc85e",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "doctors",
+                "95d9203e-2669-4f61-8c0b-182d6d8cc85e"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Get Admin By Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/v1/admin/4507c4e4-1506-4317-afa3-f00374355e78",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "4507c4e4-1506-4317-afa3-f00374355e78"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Admin",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/v1/admin/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Admin By Id",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"password\": \"StrongPass123!\",\r\n  \"admin\": {\r\n    \"name\": \"Updated\",\r\n   \r\n    \"profilePhoto\": \"https://example.com/photo.jpg\",\r\n    \"contactNumber\": \"+8801797160713\"\r\n  }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/admin/4507c4e4-1506-4317-afa3-f00374355e78",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "4507c4e4-1506-4317-afa3-f00374355e78"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Admin By ID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/v1/admin/60500603-1c81-4295-8bbc-609055bcbac1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "60500603-1c81-4295-8bbc-609055bcbac1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Schedule",
+      "item": [
+        {
+          "name": "Create schedule",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"startDate\": \"2026-03-10\",\r\n  \"endDate\": \"2026-03-13\",\r\n  \"startTime\": \"15:00\",\r\n  \"endTime\": \"21:30\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/schedules/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "schedules",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single schedule",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"startDate\": \"2026-03-10\",\r\n  \"endDate\": \"2026-03-13\",\r\n  \"startTime\": \"15:00\",\r\n  \"endTime\": \"21:30\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/schedules/af34aa87-3625-4923-b4c1-52d0e4dba4fb",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "schedules",
+                "af34aa87-3625-4923-b4c1-52d0e4dba4fb"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET All schedule",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"startDate\": \"2026-03-10\",\r\n  \"endDate\": \"2026-03-13\",\r\n  \"startTime\": \"15:00\",\r\n  \"endTime\": \"21:30\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/schedules/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "schedules",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE schedule",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"startDate\": \"2026-03-10\",\r\n  \"endDate\": \"2026-03-13\",\r\n  \"startTime\": \"15:00\",\r\n  \"endTime\": \"21:30\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/schedules/75281cdd-8094-4aae-a69d-469de7120a1b",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "schedules",
+                "75281cdd-8094-4aae-a69d-469de7120a1b"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Doctor Schedule",
+      "item": [
+        {
+          "name": "create-own-doctor-schedule",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"scheduleIds\": [\r\n    \"af34aa87-3625-4923-b4c1-52d0e4dba4fb\",\r\n    \"c2e1ff13-4002-4d9e-a58c-0668a522603f\",\r\n    \"33ef9db7-d97e-43e8-baf9-38ad3ee7bd8d\"\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/doctor-schedules/create-my-doctor-schedule",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "doctor-schedules",
+                "create-my-doctor-schedule"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Doctor Schedule",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"scheduleIds\": [\r\n    \"af34aa87-3625-4923-b4c1-52d0e4dba4fb\",\r\n    \"c2e1ff13-4002-4d9e-a58c-0668a522603f\",\r\n    \"33ef9db7-d97e-43e8-baf9-38ad3ee7bd8d\"\r\n  ]\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/doctor-schedules/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "doctor-schedules",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Doctor Shedule by id",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "get-my-schedule[DOCTOR]",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"scheduleIds\": [\r\n    \"af34aa87-3625-4923-b4c1-52d0e4dba4fb\",\r\n    \"c2e1ff13-4002-4d9e-a58c-0668a522603f\",\r\n    \"33ef9db7-d97e-43e8-baf9-38ad3ee7bd8d\"\r\n  ]\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/doctor-schedules/my-doctor-schedule",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "doctor-schedules",
+                "my-doctor-schedule"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update-doctor-scheudle",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"scheduleIds\": [\r\n    \"af34aa87-3625-4923-b4c1-52d0e4dba4fb\",\r\n    \"c2e1ff13-4002-4d9e-a58c-0668a522603f\",\r\n    \"33ef9db7-d97e-43e8-baf9-38ad3ee7bd8d\"\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/doctor-schedules/update-my-doctor-schedule",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "doctor-schedules",
+                "update-my-doctor-schedule"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Doctor schedule",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"scheduleIds\": [\r\n    \"af34aa87-3625-4923-b4c1-52d0e4dba4fb\",\r\n    \"c2e1ff13-4002-4d9e-a58c-0668a522603f\",\r\n    \"33ef9db7-d97e-43e8-baf9-38ad3ee7bd8d\"\r\n  ]\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/doctor-schedules/my-doctor-schedule",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "doctor-schedules",
+                "my-doctor-schedule"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Appoinment",
+      "item": [
+        {
+          "name": "Book Appoinment",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"doctorId\": \"d02c493c-7e6a-45e9-8969-a3c0beb2b93d\",\r\n  \"scheduleId\": \"c2e1ff13-4002-4d9e-a58c-0668a522603f\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/appointmentsbook-appointment",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "appointmentsbook-appointment"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "book apoinment with pay later",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"doctorId\": \"d02c493c-7e6a-45e9-8969-a3c0beb2b93d\",\r\n  \"scheduleId\": \"c2e1ff13-4002-4d9e-a58c-0668a522603f\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/appointments/book-appointment-with-pay-later",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "appointments",
+                "book-appointment-with-pay-later"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Initiate appoinment",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"doctorId\": \"d02c493c-7e6a-45e9-8969-a3c0beb2b93d\",\r\n  \"scheduleId\": \"c2e1ff13-4002-4d9e-a58c-0668a522603f\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/appointments/initiate-payment/0f850404-4246-483f-93cd-099441d0a926",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "appointments",
+                "initiate-payment",
+                "0f850404-4246-483f-93cd-099441d0a926"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Patient",
+      "item": [
+        {
+          "name": "updatePatienProfile",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "data",
+                  "value": "{\n    \"patientInfo\": {\n        \"name\": \"John Doe\",\n       \n        \"contactNumber\": \"+8801712345678\",\n        \"address\": \"Dhaka, Bangladesh\"\n    },\n    \"patientHealthData\": {\n        \"gender\": \"MALE\",\n        \"dateOfBirth\": \"1998-05-10\",\n        \"bloodGroup\": \"A_POSITIVE\",\n        \"hasAllergies\": true,\n        \"hasDiabetes\": false,\n        \"height\": \"175\",\n        \"weight\": \"70\",\n        \"smokingStatus\": false,\n        \"dietaryPreferences\": \"Vegetarian\",\n        \"pregnancyStatus\": false,\n        \"mentalHealthHistory\": \"No major history\",\n        \"immunizationStatus\": \"Fully vaccinated\",\n        \"hasPastSurgeries\": false,\n        \"recentAnxiety\": false,\n        \"recentDepression\": false,\n        \"maritalStatus\": \"Single\"\n    }\n}",
+                  "type": "text",
+                  "uuid": "623638b9-bb50-4664-8cfe-30c3adf6762c"
+                },
+                {
+                  "key": "profilePhoto",
+                  "type": "file",
+                  "uuid": "5d8b5067-1b63-46b8-83ce-6ae698728344",
+                  "src": "/C:/Users/User/Downloads/photo-1651582426026-8557c51c9bc1.avif"
+                },
+                {
+                  "key": "medicalReports",
+                  "type": "file",
+                  "uuid": "5a2478ae-8890-4862-bce9-c4c9522e1ae6",
+                  "src": [
+                    "/C:/Users/User/Downloads/Appendix-2.-Example-Medical-Report-1.pdf",
+                    "/C:/Users/User/Downloads/J-B-12-10-16-ML-Example-report.pdf"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/patients/update-my-profile",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "patients",
+                "update-my-profile"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Stats",
+      "item": [
+        {
+          "name": "Stats",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"superadmin@helthcare.com\",\r\n    \"password\": \"12345678\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/stats",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
